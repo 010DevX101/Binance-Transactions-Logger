@@ -2,19 +2,19 @@ require("dotenv").config();
 const { google } = require("googleapis");
 const crypto = require("crypto");
 const axios = require("axios").default;
-const pairs = ["BTCUSDT", "ETHUSDT"]
+const pairs = ["BTCUSDT", "ETHUSDT"];
 
 async function retrieveOrders(symbol) {
-    const baseEndpoint = "https://api.binance.com"
-    const apiKey = process.env.API_KEY
-    const apiSecret = process.env.API_SECRET
+    const baseEndpoint = "https://api.binance.com";
+    const apiKey = process.env.API_KEY;
+    const apiSecret = process.env.API_SECRET;
     const timestamp = Date.now();
-    const query_string = `symbol=${symbol}&timestamp=${timestamp}`
+    const query_string = `symbol=${symbol}&timestamp=${timestamp}`;
 
     const signature = crypto
         .createHmac("sha256", apiSecret)
         .update(query_string)
-        .digest("hex")
+        .digest("hex");
 
     const response = await axios.get(`${baseEndpoint}/api/v3/allOrders`, {
         headers: {
@@ -25,46 +25,42 @@ async function retrieveOrders(symbol) {
             timestamp: timestamp,
             signature: signature
         }
-    })
-    return response.data
+    });
+    return response.data;
 }
 
 async function updateSpreadsheet(values) {
-    const spreadsheetId = process.env.SPREADSHEET_ID
+    const spreadsheetId = process.env.SPREADSHEET_ID;
     const auth = new google.auth.GoogleAuth({
         keyFile: "credentials.json",
         scopes: ["https://www.googleapis.com/auth/spreadsheets"]
-    })
+    });
 
     const authClient = await auth.getClient();
     const client = await google.sheets({
         version: "v4",
         auth: authClient
-    })
+    });
 
-    const getValues = await client.spreadsheets.values.get({
+    client.spreadsheets.values.update({
         auth,
         spreadsheetId,
-        range: "HistorySheet"
-    })
-
-    client.spreadsheets.values.append({
-        auth,
-        spreadsheetId,
-        range: "HistorySheet",
+        range: "HistorySheet!A2",
         valueInputOption: "USER_ENTERED",
         resource: {
             values
         }
-    })
+    });
 }
 
-pairs.forEach(symbol => {
-    retrieveOrders(symbol).then(orders => {
-        const values = []
-        orders.forEach(order => {
-            values.push([order.symbol, new Date(order.time).toLocaleDateString(), order.type, order.side, order.executedQty, `$${order.cummulativeQuoteQty}`, `$${order.price}`, order.time, order.orderId])
-        });
-        updateSpreadsheet(values);
+setInterval(function() {
+    pairs.forEach(symbol => {
+        retrieveOrders(symbol).then(orders => {
+            const values = [];
+            orders.forEach(order => {
+                values.push([order.symbol, new Date(order.time).toLocaleDateString(), order.type, order.side, order.executedQty, `$${order.cummulativeQuoteQty}`, `$${order.price}`, order.time, order.orderId]);
+            });
+            updateSpreadsheet(values);
+        })
     })
-})
+}, 2000)

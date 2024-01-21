@@ -1,13 +1,13 @@
 {
   "name": "binanceapi",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Open source Binance transactions logger, uses Binance API and Spreadsheets API to log transactions into a Google Spreadsheet.",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "DevX",
+  "license": "MIT",
   "dependencies": {
     "@binance/connector": "^3.1.0",
     "axios": "^1.6.5",

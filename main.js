@@ -63,4 +63,4 @@ setInterval(function() {
             updateSpreadsheet(values);
         })
     })
-}, 2000)
+}, 5000)

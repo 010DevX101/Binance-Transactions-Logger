@@ -24,7 +24,7 @@
     "gaxios": "^6.1.1",
     "gcp-metadata": "^6.1.0",
     "get-intrinsic": "^1.2.2",
-    "git": "^0.1.5",
+    "git": "^9.5.1",
     "google-auth-library": "^9.4.2",
     "googleapis": "^130.0.0",
     "googleapis-common": "^7.0.1",

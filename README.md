@@ -1,4 +1,5 @@
 # Binance Transactions Logger
+![version](https://img.shields.io/badge/version-1.0.0-yellow)
 Open source Binance transactions logger, uses Binance API and Spreadsheets API to log transactions into a Google Spreadsheet.
 
 ## Usage

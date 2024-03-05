@@ -58,6 +58,9 @@ setInterval(function() {
         retrieveOrders(symbol).then(orders => {
             const values = [];
             orders.forEach(order => {
+                if (order.status == "CANCELED") {
+                    return;
+                }
                 values.push([order.symbol, new Date(order.time).toLocaleDateString(), order.type, order.side, order.executedQty, `$${order.cummulativeQuoteQty}`, `$${order.price}`, order.time, order.orderId]);
             });
             updateSpreadsheet(values);
